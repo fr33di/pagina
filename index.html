@@ -96,35 +96,44 @@
   </script>
 
 
-<h2>Vista previa de la primera página del PDF</h2>
-<div id="pdf-container" style="width: 100%; height: 600px; overflow-y: auto; border:1px solid #ccc; padding:10px;"></div>
+<!-- Contenedor del PDF -->
+<div id="pdf-container" style="
+    width: 80%; 
+    height: 600px; 
+    overflow-y: auto; 
+    border: 1px solid #ccc; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    margin: 20px auto; 
+    padding: 10px;">
+</div>
 
+<!-- Librería PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.146/pdf.min.js"></script>
+
 <script>
-  const url = '115.pdf'; // Cambia al nombre correcto de tu PDF
-  const container = document.getElementById('pdf-container');
+const url = '115.pdf'; // Cambia al nombre correcto de tu PDF
+const container = document.getElementById('pdf-container');
 
-  pdfjsLib.getDocument(url).promise.then(pdf => {
-    pdf.getPage(1).then(page => { // Solo la primera página
-      const scale = 2; // Ajusta tamaño del preview
-      const viewport = page.getViewport({ scale });
+pdfjsLib.getDocument(url).promise.then(pdf => {
+  return pdf.getPage(1); // Solo la primera página
+}).then(page => {
+  const scale = 2; // Ajusta tamaño del preview
+  const viewport = page.getViewport({ scale });
 
-      const canvas = document.createElement('canvas');
-      canvas.style.display = 'block';
-      canvas.style.margin = '0 auto';
-      container.appendChild(canvas);
+  const canvas = document.createElement('canvas');
+  canvas.style.display = 'block';
+  canvas.style.margin = '0 auto';
+  container.appendChild(canvas);
 
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+  const context = canvas.getContext('2d');
+  canvas.height = viewport.height;
+  canvas.width = viewport.width;
 
-      page.render({ canvasContext: context, viewport }).promise.then(() => {
-        console.log('Primera página renderizada');
-      });
-    });
-  }).catch(err => console.error('Error cargando PDF:', err));
+  page.render({ canvasContext: context, viewport }).promise.then(() => {
+    console.log('Primera página renderizada');
+  });
+}).catch(err => console.error('Error cargando PDF:', err));
 </script>
-
 
 
 </body>
