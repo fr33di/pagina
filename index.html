@@ -97,9 +97,37 @@
 
 
 <h2>Mi PDF con scroll vertical</h2>
-<div style="width: 100%; height: 600px; overflow-y: auto; border: 1px solid #ccc;">
-  <iframe src="115.pdf" width="100%" height="100%" style="border: none;"></iframe>
-</div>
+<h2>Vista previa del PDF con scroll</h2>
+<div id="pdf-container" style="width: 100%; height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.146/pdf.min.js"></script>
+<script>
+  const url = '115.pdf'; // Cambia por la ruta de tu PDF
+  const container = document.getElementById('pdf-container');
+
+  pdfjsLib.getDocument(url).promise.then(pdf => {
+    const totalPages = pdf.numPages;
+
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.getPage(i).then(page => {
+        // Escala más grande para la primera página, más pequeña para las demás
+        const scale = (i === 1) ? 2 : 1; 
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement('canvas');
+        canvas.style.display = 'block';
+        canvas.style.margin = '10px auto'; // Centrar el canvas
+        container.appendChild(canvas);
+
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        page.render({ canvasContext: context, viewport: viewport });
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
