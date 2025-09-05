@@ -1,140 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Código Python externo</title>
-
-  <!-- Highlight.js CSS -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
-
-  <!-- Line numbers CSS -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/styles/line-numbers.min.css">
-
-  <style>
-    .code-container {
-      position: relative;
-      margin: 20px auto;
-      max-width: 800px;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    /* Scroll vertical */
-    pre {
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #1abc9c;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      font-size: 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-      z-index: 10;
-    }
-
-    .copy-btn:hover {
-      background: #16a085;
-    }
-
-    pre code {
-      text-align: left !important;
-      display: block;
-      white-space: pre;
-      padding-left: 0 !important;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Visor PDF</title>
 </head>
 <body>
-  <h2>Código Python desde archivo externo</h2>
+<canvas id="pdf-canvas"></canvas>
 
-  <div class="code-container">
-    <button class="copy-btn">Copiar</button>
-    <pre><code id="external-code" class="language-python line-numbers"></code></pre>
-  </div>
-
-  <!-- Highlight.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
-
-  <!-- Plugin line numbers -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
-
-  <script>
-    // Cargar código Python desde archivo externo
-    fetch('ejemplo.py')
-      .then(response => response.text())
-      .then(code => {
-        const codeBlock = document.getElementById('external-code');
-        codeBlock.textContent = code; // colocar el código en el bloque
-        hljs.highlightElement(codeBlock); // resaltar
-        hljs.lineNumbersBlock(codeBlock); // agregar números de línea
-      });
-
-    // Botón copiar
-    document.querySelectorAll('.copy-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const code = btn.nextElementSibling.innerText;
-        navigator.clipboard.writeText(code).then(() => {
-          btn.innerText = "¡Copiado!";
-          setTimeout(() => btn.innerText = "Copiar", 2000);
-        });
-      });
-    });
-  </script>
-
-
-<!-- Contenedor del PDF -->
-<div id="pdf-container" style="
-    width: 80%; 
-    height: 600px; 
-    overflow-y: auto; 
-    border: 1px solid #ccc; 
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
-    margin: 20px auto; 
-    padding: 10px;">
-</div>
-
-<!-- Librería PDF.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.146/pdf.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.100/pdf.min.js"></script>
 <script>
-const url = '115.pdf'; // Cambia al nombre correcto de tu PDF
-const container = document.getElementById('pdf-container');
+const url = '115.pdf'; // asegúrate de que esté en la misma carpeta
+
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.100/pdf.worker.min.js';
 
 pdfjsLib.getDocument(url).promise.then(pdf => {
-  return pdf.getPage(1); // Solo la primera página
-}).then(page => {
-  const scale = 2; // Ajusta tamaño del preview
-  const viewport = page.getViewport({ scale });
+    pdf.getPage(1).then(page => {
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.getElementById('pdf-canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-  const canvas = document.createElement('canvas');
-  canvas.style.display = 'block';
-  canvas.style.margin = '0 auto';
-  container.appendChild(canvas);
-
-  const context = canvas.getContext('2d');
-  canvas.height = viewport.height;
-  canvas.width = viewport.width;
-
-  page.render({ canvasContext: context, viewport }).promise.then(() => {
-    console.log('Primera página renderizada');
-  });
-}).catch(err => console.error('Error cargando PDF:', err));
+        page.render({ canvasContext: context, viewport: viewport });
+    });
+});
 </script>
-
-
 </body>
 </html>
