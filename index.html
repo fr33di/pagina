@@ -1,30 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Visor PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .pdf-container {
+            width: 80%;
+            height: 600px;
+            border: 2px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-<canvas id="pdf-canvas"></canvas>
+    <h1>Visor de PDF: 115.pdf</h1>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.100/pdf.min.js"></script>
-<script>
-const url = '115.pdf'; // asegúrate de que esté en la misma carpeta
+    <!-- Visor de PDF usando iframe -->
+    <iframe 
+        class="pdf-container"
+        src="115.pdf" 
+        width="100%" 
+        height="100%">
+    </iframe>
 
-const pdfjsLib = window['pdfjs-dist/build/pdf'];
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.100/pdf.worker.min.js';
+    <br>
 
-pdfjsLib.getDocument(url).promise.then(pdf => {
-    pdf.getPage(1).then(page => {
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.getElementById('pdf-canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        page.render({ canvasContext: context, viewport: viewport });
-    });
-});
-</script>
+    <!-- Visor de PDF usando embed -->
+    <embed 
+        class="pdf-container"
+        src="115.pdf" 
+        type="application/pdf" 
+        width="100%" 
+        height="100%">
 </body>
 </html>
