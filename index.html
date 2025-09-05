@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Código Python con Scroll Vertical</title>
+  <title>Código Python externo</title>
 
-  <!-- Tema de Highlight.js -->
+  <!-- Highlight.js CSS -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
 
-  <!-- Estilos para line numbers -->
+  <!-- Line numbers CSS -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/styles/line-numbers.min.css">
 
@@ -22,10 +22,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Bloque de código con scroll vertical */
-    .code-container pre {
-      max-height: 300px; /* altura máxima del bloque */
-      overflow-y: auto;   /* scroll vertical si es necesario */
+    /* Scroll vertical */
+    pre {
+      max-height: 300px;
+      overflow-y: auto;
       padding: 20px;
       margin: 0;
     }
@@ -49,7 +49,6 @@
       background: #16a085;
     }
 
-    /* Alineación a la izquierda */
     pre code {
       text-align: left !important;
       display: block;
@@ -59,127 +58,32 @@
   </style>
 </head>
 <body>
-  <h2>Ejemplo de código Python con scroll vertical</h2>
+  <h2>Código Python desde archivo externo</h2>
 
   <div class="code-container">
     <button class="copy-btn">Copiar</button>
-    <pre><code class="language-python line-numbers">
-def ejemplo_largo():
-    texto = '''Este es un texto largo
-que ocupa varias líneas
-y queremos que tenga scroll
-para que no se expanda todo
-en la página y solo se mueva
-dentro del bloque de código'''
-    for i in range(20):
-        print(f"Línea {i}: {texto}")
-
-ejemplo_largo()
-	def ejemplo_largo():
-
-	    texto = '''Este es un texto largo
-
-	que ocupa varias líneas
-
-	y queremos que tenga scroll
-
-	para que no se expanda todo
-
-	en la página y solo se mueva
-
-	dentro del bloque de código'''
-
-	    for i in range(20):
-
-	        print(f"Línea {i}: {texto}")
-
-	 
-
-	ejemplo_largo()
-
-	def ejemplo_largo():
-
-	    texto = '''Este es un texto largo
-
-	que ocupa varias líneas
-
-	y queremos que tenga scroll
-
-	para que no se expanda todo
-
-	en la página y solo se mueva
-
-	dentro del bloque de código'''
-
-	    for i in range(20):
-
-	        print(f"Línea {i}: {texto}")
-
-	 
-
-	ejemplo_largo()
-	def ejemplo_largo():
-
-	    texto = '''Este es un texto largo
-
-	que ocupa varias líneas
-
-	y queremos que tenga scroll
-
-	para que no se expanda todo
-
-	en la página y solo se mueva
-
-	dentro del bloque de código'''
-
-	    for i in range(20):
-
-	        print(f"Línea {i}: {texto}")
-
-	 
-
-	ejemplo_largo()
-
-	def ejemplo_largo():
-
-	    texto = '''Este es un texto largo
-
-	que ocupa varias líneas
-
-	y queremos que tenga scroll
-
-	para que no se expanda todo
-
-	en la página y solo se mueva
-
-	dentro del bloque de código'''
-
-	    for i in range(20):
-
-	        print(f"Línea {i}: {texto}")
-
-	 
-
-	ejemplo_largo()
-
-
-    </code></pre>
+    <pre><code id="external-code" class="language-python line-numbers"></code></pre>
   </div>
 
   <!-- Highlight.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
 
-  <!-- Plugin de números de línea -->
+  <!-- Plugin line numbers -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
 
   <script>
-    hljs.highlightAll();
-    hljs.initLineNumbersOnLoad();
-  </script>
+    // Cargar código Python desde archivo externo
+    fetch('ejemplo.py')
+      .then(response => response.text())
+      .then(code => {
+        const codeBlock = document.getElementById('external-code');
+        codeBlock.textContent = code; // colocar el código en el bloque
+        hljs.highlightElement(codeBlock); // resaltar
+        hljs.lineNumbersBlock(codeBlock); // agregar números de línea
+      });
 
-  <!-- Script para copiar -->
-  <script>
+    // Botón copiar
     document.querySelectorAll('.copy-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const code = btn.nextElementSibling.innerText;
